@@ -652,6 +652,147 @@ header{
   .profileRankRow .profileMetaBlock{grid-area:meta;justify-content:flex-start!important}
 }
 
+
+/* === Icon metadata alignment: always right, always one line === */
+.rankRow.gameRankRow{
+  grid-template-columns:82px minmax(240px,320px) minmax(40px,1fr) max-content 72px 48px!important;
+  grid-template-areas:"score title . meta cover rank"!important;
+  column-gap:18px!important;
+}
+.gameRankRow .rankMetaBlock{
+  grid-area:meta!important;
+  justify-self:end!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  align-self:center!important;
+  width:max-content!important;
+  max-width:none!important;
+  min-width:0!important;
+  height:auto!important;
+}
+.rankRow.profileRankRow{
+  grid-template-columns:82px 92px minmax(240px,320px) minmax(40px,1fr) max-content 72px 48px!important;
+  grid-template-areas:"score edit title . meta cover rank"!important;
+  column-gap:18px!important;
+}
+.profileRankRow .profileMetaBlock{
+  grid-area:meta!important;
+  justify-self:end!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  align-self:center!important;
+  width:max-content!important;
+  max-width:none!important;
+  min-width:0!important;
+  height:auto!important;
+}
+.rankMetaPills,
+.voterMetaChips{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  width:max-content!important;
+  max-width:none!important;
+  white-space:nowrap!important;
+  direction:rtl!important;
+}
+.rankMetaPills .metaPill,
+.voterMetaChips .metaPill{
+  flex:0 0 auto!important;
+  white-space:nowrap!important;
+  margin:0!important;
+}
+
+/* Game-page user rows: name + icon chips + score + details all on the same row */
+.voter summary{
+  display:grid!important;
+  grid-template-columns:42px minmax(100px,180px) minmax(0,1fr) 56px 92px!important;
+  grid-template-areas:"avatar name meta score details"!important;
+  gap:12px!important;
+  align-items:center!important;
+}
+.voter summary .voterAvatar{grid-area:avatar}
+.voter summary .voterIdentity{
+  grid-area:name;
+  display:flex!important;
+  align-items:center!important;
+  height:100%!important;
+}
+.voter summary>.voterMetaChips{
+  grid-area:meta;
+  justify-self:end!important;
+}
+.voter summary .voterOverall{
+  grid-area:score;
+  justify-self:center!important;
+}
+.voter summary .expandControl{
+  grid-area:details;
+  justify-self:end!important;
+}
+.voterMeta{display:none!important}
+
+/* Public profile review cards: metadata stays in a single right-aligned row */
+.profileReviewBody>.voterMetaChips{
+  align-self:flex-end!important;
+  margin-top:8px!important;
+}
+
+/* Never let icon chips fall onto a second line on desktop */
+@media(min-width:761px){
+  .rankMetaPills,.voterMetaChips{overflow:visible!important}
+}
+@media(max-width:1100px) and (min-width:761px){
+  .rankRow.gameRankRow{
+    grid-template-columns:70px minmax(170px,240px) 1fr max-content 62px 42px!important;
+    grid-template-areas:"score title . meta cover rank"!important;
+  }
+  .rankRow.profileRankRow{
+    grid-template-columns:70px 82px minmax(170px,240px) 1fr max-content 62px 42px!important;
+    grid-template-areas:"score edit title . meta cover rank"!important;
+  }
+  .rankMetaPills .metaPill{padding:5px 7px!important;font-size:.57rem!important}
+}
+@media(max-width:760px){
+  .rankRow.gameRankRow{
+    grid-template-columns:58px 1fr 50px 34px!important;
+    grid-template-areas:"score title cover rank" "meta meta meta meta"!important;
+  }
+  .gameRankRow .rankMetaBlock{
+    grid-area:meta!important;
+    justify-self:end!important;
+    width:100%!important;
+    overflow-x:auto!important;
+  }
+  .rankRow.profileRankRow{
+    grid-template-columns:58px 70px 1fr 50px 34px!important;
+    grid-template-areas:"score edit title cover rank" "meta meta meta meta meta"!important;
+  }
+  .profileRankRow .profileMetaBlock{
+    grid-area:meta!important;
+    justify-self:end!important;
+    width:100%!important;
+    overflow-x:auto!important;
+  }
+  .voter summary{
+    grid-template-columns:38px 1fr 50px!important;
+    grid-template-areas:"avatar name score" "meta meta meta" "details details details"!important;
+  }
+  .voter summary>.voterMetaChips{
+    grid-area:meta!important;
+    justify-self:end!important;
+    overflow-x:auto!important;
+    max-width:100%!important;
+  }
+  .voter summary .expandControl{
+    grid-area:details!important;
+    justify-self:end!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -741,7 +882,7 @@ ${section('محبوب‌ترین بازی‌ها','بر اساس تعداد رأ
 <section class="section"><div class="head"><div><h2>آخرین نقدها</h2><p>نظرهای کوتاه کاربران درباره بازی‌هایی که تجربه کرده‌اند</p></div></div><div class="reviewCards">${revs.map(r=>{let x=g(r.gameId);return `<div class="review" onclick="go('user:${encodeURIComponent(r.username)}')" style="cursor:pointer"><div class="reviewTop"><img src="${x.img}"><div><div class="reviewGame">${x.name}</div><div class="reviewUser">${r.username}</div></div><div class="reviewScore">${r.overall.toFixed(1)}</div></div><p class="reviewRendered">${renderReview(r.review)}</p></div>`}).join('')}</div></section>`}
 function discover(){return `<div class="topline"><div><h1>همه بازی‌ها</h1><p>${games.length} عنوان در نسخه فعلی دمو</p></div></div><div class="gameRow">${games.map(card).join('')}</div>`}
 function rankings(){let years=[...new Set(games.map(x=>x.year))].sort((a,b)=>b-a),platforms=[...new Set(games.flatMap(x=>x.platforms))].sort(),arr=games.filter(x=>(rankState.year==='all'||String(x.year)===rankState.year)&&(rankState.platform==='all'||x.platforms.includes(rankState.platform)));if(rankState.sort==='score')arr.sort((a,b)=>aggregate(b).score-aggregate(a).score);if(rankState.sort==='ratings')arr.sort((a,b)=>aggregate(b).ratings-aggregate(a).ratings);if(rankState.sort==='newest')arr.sort((a,b)=>b.year-a.year);return `<div class="topline"><div><h1>رتبه‌بندی کاربران</h1><p>رتبه‌بندی را بر اساس سال، پلتفرم و نوع مرتب‌سازی بررسی کنید.</p></div></div><div class="rankFilters"><label>سال<select onchange="setRankFilter('year',this.value)"><option value="all">همه سال‌ها</option>${years.map(y=>`<option value="${y}" ${rankState.year===String(y)?'selected':''}>${y}</option>`).join('')}</select></label><label>پلتفرم<select onchange="setRankFilter('platform',this.value)"><option value="all">همه پلتفرم‌ها</option>${platforms.map(p=>`<option value="${p}" ${rankState.platform===p?'selected':''}>${p}</option>`).join('')}</select></label><label>مرتب‌سازی<select onchange="setRankFilter('sort',this.value)"><option value="score" ${rankState.sort==='score'?'selected':''}>بالاترین امتیاز</option><option value="ratings" ${rankState.sort==='ratings'?'selected':''}>بیشترین رأی</option><option value="newest" ${rankState.sort==='newest'?'selected':''}>جدیدترین</option></select></label></div><div class="rankTable">${arr.map((x,i)=>rankingRow(x,i)).join('')||'<div style="padding:24px">بازی‌ای با این فیلترها پیدا نشد.</div>'}</div>`}
-function gamePage(id){let x=g(id);if(!x)return home();let a=aggregate(x),voters=gameVoters(id),me=localStorage.getItem(NAME)||'Guest';return `<div class="gameHero"><div class="poster"><img src="${x.img}"></div><div><div style="display:flex;justify-content:space-between;gap:14px;align-items:start"><div><h1 class="title">${x.name}</h1><div style="font-size:.72rem;color:var(--muted)">${x.genres.join('، ')}</div></div><button class="btn" onclick="newRating('${x.id}')">ثبت امتیاز</button></div><p class="summary">${x.summary}</p><div class="infoGrid"><div class="info"><span>تاریخ انتشار</span><b>${x.release}</b></div><div class="info"><span>سازنده</span><b class="en">${x.dev}</b></div><div class="info"><span>ناشر</span><b class="en">${x.pub}</b></div><div class="info"><span>ژانر</span><b>${x.genres.join('، ')}</b></div><div class="info"><span>حالت بازی</span><b>${x.modes}</b></div><div class="info"><span>میانگین زمان تجربه</span><b>${a.hours.toFixed(1)} ساعت</b></div></div><div class="tags">${x.platforms.map(p=>`<span class="tag">${p}</span>`).join('')}</div><div class="scoreBoard"><div class="big"><small style="display:block;margin-bottom:4px;font-weight:900;color:#1769ff">BaziCenter User Score</small><b>${a.score.toFixed(1)}</b><small>بر اساس ${fmt(a.ratings)} رأی</small></div><div class="bars">${cats.map((ct,i)=>`<div class="barRow"><span>${ct}</span>${segBar(a.cats[i])}<span class="barNum">${a.cats[i].toFixed(1)}</span></div>`).join('')}</div></div><div class="voters"><div class="votersHead"><h3>کاربرانی که امتیاز داده‌اند</h3><span>${fmt(voters.length)} نمونه قابل مشاهده</span></div>${voters.length?voters.slice().reverse().map(r=>`<details class="voter"><summary><div class="voterAvatar" onclick="event.preventDefault();event.stopPropagation();go('user:${encodeURIComponent(r.username)}')">${(r.username||'G').charAt(0).toUpperCase()}</div><div class="voterIdentity"><span class="voterName" onclick="event.preventDefault();event.stopPropagation();go('user:${encodeURIComponent(r.username)}')">${r.username||'Guest'}</span><div class="voterMetaChips">${voterMeta(r)}</div></div><div class="voterOverall">${r.overall.toFixed(1)}</div><div class="expandControl"><span>جزئیات</span><b>⌄</b></div></summary><div class="voterBody"><div class="voterActions">${r.username!==me?`<button class="followBtn ${isFollowing(r.username)?'on':''}" onclick="toggleFollow('${r.username}')">${isFollowing(r.username)?'دنبال می‌کنید':'دنبال کردن'}</button>`:''}</div><div class="userCats">${cats.map((ct,i)=>`<div class="userCat"><span>${ct}</span><b>${r.scores[i].toFixed(1)}</b></div>`).join('')}</div>${r.review?`<div class="userReview"><b>نقد</b><div class="reviewRendered">${renderReview(r.review)}</div></div>`:''}</div></details>`).join(''):`<div style="padding:18px;color:#748095;font-size:.72rem">اولین نفری باشید که برای این بازی امتیاز ثبت می‌کند.</div>`}</div></div></div>`}
+function gamePage(id){let x=g(id);if(!x)return home();let a=aggregate(x),voters=gameVoters(id),me=localStorage.getItem(NAME)||'Guest';return `<div class="gameHero"><div class="poster"><img src="${x.img}"></div><div><div style="display:flex;justify-content:space-between;gap:14px;align-items:start"><div><h1 class="title">${x.name}</h1><div style="font-size:.72rem;color:var(--muted)">${x.genres.join('، ')}</div></div><button class="btn" onclick="newRating('${x.id}')">ثبت امتیاز</button></div><p class="summary">${x.summary}</p><div class="infoGrid"><div class="info"><span>تاریخ انتشار</span><b>${x.release}</b></div><div class="info"><span>سازنده</span><b class="en">${x.dev}</b></div><div class="info"><span>ناشر</span><b class="en">${x.pub}</b></div><div class="info"><span>ژانر</span><b>${x.genres.join('، ')}</b></div><div class="info"><span>حالت بازی</span><b>${x.modes}</b></div><div class="info"><span>میانگین زمان تجربه</span><b>${a.hours.toFixed(1)} ساعت</b></div></div><div class="tags">${x.platforms.map(p=>`<span class="tag">${p}</span>`).join('')}</div><div class="scoreBoard"><div class="big"><small style="display:block;margin-bottom:4px;font-weight:900;color:#1769ff">BaziCenter User Score</small><b>${a.score.toFixed(1)}</b><small>بر اساس ${fmt(a.ratings)} رأی</small></div><div class="bars">${cats.map((ct,i)=>`<div class="barRow"><span>${ct}</span>${segBar(a.cats[i])}<span class="barNum">${a.cats[i].toFixed(1)}</span></div>`).join('')}</div></div><div class="voters"><div class="votersHead"><h3>کاربرانی که امتیاز داده‌اند</h3><span>${fmt(voters.length)} نمونه قابل مشاهده</span></div>${voters.length?voters.slice().reverse().map(r=>`<details class="voter"><summary><div class="voterAvatar" onclick="event.preventDefault();event.stopPropagation();go('user:${encodeURIComponent(r.username)}')">${(r.username||'G').charAt(0).toUpperCase()}</div><div class="voterIdentity"><span class="voterName" onclick="event.preventDefault();event.stopPropagation();go('user:${encodeURIComponent(r.username)}')">${r.username||'Guest'}</span></div><div class="voterMetaChips">${voterMeta(r)}</div><div class="voterOverall">${r.overall.toFixed(1)}</div><div class="expandControl"><span>جزئیات</span><b>⌄</b></div></summary><div class="voterBody"><div class="voterActions">${r.username!==me?`<button class="followBtn ${isFollowing(r.username)?'on':''}" onclick="toggleFollow('${r.username}')">${isFollowing(r.username)?'دنبال می‌کنید':'دنبال کردن'}</button>`:''}</div><div class="userCats">${cats.map((ct,i)=>`<div class="userCat"><span>${ct}</span><b>${r.scores[i].toFixed(1)}</b></div>`).join('')}</div>${r.review?`<div class="userReview"><b>نقد</b><div class="reviewRendered">${renderReview(r.review)}</div></div>`:''}</div></details>`).join(''):`<div style="padding:18px;color:#748095;font-size:.72rem">اولین نفری باشید که برای این بازی امتیاز ثبت می‌کند.</div>`}</div></div></div>`}
 function ratePage(id){let x=g(id),nm=localStorage.getItem(NAME)||'Guest',editId=sessionStorage.getItem('bc_edit_rating'),rec=editId?saved().find(r=>r.id===editId&&r.gameId===id):null,vals=rec?rec.scores:[8.5,8,9,8,8.5],hrs=rec?rec.hours:24,rev=rec?rec.review:'',st=rec?rec.status:'تمام‌شده',pls=rec?rec.platforms:[x.platforms[0]],overall=vals.reduce((a,b)=>a+b,0)/vals.length;return `<div class="rateBox"><div class="rateHead"><img src="${x.img}"><div><div class="rateTitle">${x.name}</div><div style="font-size:.68rem;color:#c7ccd5;margin-top:4px">${rec?'ویرایش امتیاز':'ثبت امتیاز'} برای ${nm}</div></div><div class="live"><b id="overall">${overall.toFixed(1)}</b><span>امتیاز نهایی / 10</span></div></div><div class="form"><div class="formSec"><h3>پلتفرم‌هایی که بازی کرده‌اید</h3><div class="formHint">فقط پلتفرم‌هایی نمایش داده می‌شوند که این بازی برای آن‌ها منتشر شده است.</div><div class="selects" id="plats">${x.platforms.map(p=>`<button class="sel ${pls.includes(p)?'on':''}" onclick="this.classList.toggle('on')">${p}</button>`).join('')}</div></div><div class="formSec"><h3>وضعیت تجربه</h3><div class="selects" id="status">${['تمام‌شده','در حال تجربه','رهاشده'].map(s=>`<button class="sel ${st===s?'on':''}" onclick="pick(this,'#status')">${s}</button>`).join('')}</div></div><div class="formSec"><h3>زمان تجربه</h3><input id="hours" class="field" type="number" value="${hrs}" min="0" style="width:130px"> ساعت</div><div class="formSec scoreFormSec"><h3>امتیاز بخش‌ها</h3><div class="scoreInputs">${cats.map((n,i)=>`<div class="scoreInputRow"><label>${n}</label>${scoreInput(vals[i])}<span class="slval">${(+vals[i]).toFixed(1)}</span></div>`).join('')}</div></div><div class="formSec"><h3>نقد شما</h3>${reviewToolbar()}<textarea id="review" class="field textarea reviewEditor" onkeydown="reviewKey(event)" placeholder="نظر خود را درباره بازی بنویسید...">${rev}</textarea><div class="editorHint">می‌توانید بخشی از متن را انتخاب کنید و Bold / Italic / Underline یا رنگ دلخواه بدهید. Emoji و کاراکترهای ویژه هم مستقیم در متن قرار می‌گیرند.</div></div><div style="display:flex;justify-content:flex-end;gap:8px;padding-top:15px"><button class="chip" onclick="cancelRating('${x.id}')">انصراف</button><button class="btn" onclick="saveRating('${x.id}')">${rec?'ذخیره ویرایش و ساخت BBCode':'ثبت امتیاز و ساخت BBCode'}</button></div><div id="savedMsg" class="saved"></div></div></div>`}
 function saveRating(id){let x=g(id),sl=[...document.querySelectorAll('.scoreSlider')],scores=sl.map(e=>+e.value),overall=scores.reduce((a,b)=>a+b,0)/scores.length,platforms=[...document.querySelectorAll('#plats .on')].map(e=>e.textContent),status=document.querySelector('#status .on')?.textContent||'',hours=+document.getElementById('hours').value||0,review=document.getElementById('review').value.trim(),username=localStorage.getItem(NAME)||'Guest',editId=sessionStorage.getItem('bc_edit_rating');let arr=saved(),payload={id:editId||Date.now().toString(36),gameId:id,username,platforms,status,hours,scores,overall,review,createdAt:new Date().toISOString()};if(editId){let i=arr.findIndex(r=>r.id===editId);if(i>=0)payload.createdAt=arr[i].createdAt,arr[i]=payload;else arr.push(payload)}else arr.push(payload);setSaved(arr);sessionStorage.removeItem('bc_edit_rating');let base=location.href.split('#')[0],gameUrl=base+'#game:'+id,lines=["[CENTER][URL='"+gameUrl+"'][IMG]"+x.img+"[/IMG][/URL]","", "[URL='"+gameUrl+"'][B]"+x.name+"[/B][/URL]","[B]امتیاز نهایی: "+overall.toFixed(1)+"/10[/B][/CENTER]","", "[B]گیم‌پلی:[/B] "+scores[0].toFixed(1),"[B]داستان:[/B] "+scores[1].toFixed(1),"[B]گرافیک هنری:[/B] "+scores[2].toFixed(1),"[B]گرافیک فنی:[/B] "+scores[3].toFixed(1),"[B]موسیقی:[/B] "+scores[4].toFixed(1),"", "[B]پلتفرم:[/B] "+platforms.join(', '),"[B]زمان تجربه:[/B] "+hours+" ساعت","[B]وضعیت:[/B] "+status];if(review){lines.push("","[B]نقد[/B]",review)}let bb=lines.join(String.fromCharCode(10));window.__bb=bb;let box=document.getElementById('savedMsg');box.classList.add('show');box.innerHTML=`<b>ثبت شد.</b> امتیاز ذخیره شد و BBCode آماده است.<br><br><button class="btn" onclick="sendToForum()">ارسال در انجمن</button><textarea id="bbcode" class="field bb">${bb.replace(/</g,'&lt;')}</textarea><br><button class="chip" onclick="go('game:${id}')">مشاهده صفحه بازی</button>`}
 async function sendToForum(){await navigator.clipboard.writeText(window.__bb||'');window.open('https://forum.bazicenter.com/threads/امتياز-اعضای-بازی-سنتر-به-عناوین-تجربه-شده-حتما-پست-اول-مطالعه-شود.24977/reply','_blank');alert('متن نقد کپی شد و صفحه پاسخ انجمن باز شد. فعلاً یک Paste لازم است؛ برای پر شدن خودکار ادیتور، باید سمت XenForo بازی‌سنتر پشتیبانی اضافه شود.')}
