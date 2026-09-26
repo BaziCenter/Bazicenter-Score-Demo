@@ -601,6 +601,57 @@ header{
   .profileRankRow .profileMetaBlock{display:none}
 }
 
+
+/* Ranking/profile rows: title stays on the left, metadata becomes icon chips on the right */
+.rankRow.gameRankRow{
+  display:grid!important;
+  grid-template-columns:82px minmax(220px,300px) minmax(360px,1fr) 72px 48px!important;
+  grid-template-areas:"score title meta cover rank"!important;
+  direction:ltr!important;
+  gap:18px!important;
+  align-items:center!important;
+  min-height:110px!important;
+}
+.gameRankRow .rs{grid-area:score;justify-self:start}
+.gameRankRow .rankTitleBlock{grid-area:title;display:flex!important;align-items:center!important;justify-content:flex-start!important;height:100%!important}
+.gameRankRow .rn{direction:ltr;text-align:left;font:800 .78rem Inter;display:flex!important;align-items:center!important;height:100%!important;justify-content:flex-start!important}
+.gameRankRow .rankMetaBlock{grid-area:meta;display:flex!important;align-items:center!important;justify-content:flex-end!important;height:100%!important;direction:rtl}
+.gameRankRow .rankCover{grid-area:cover;width:58px;height:78px;object-fit:cover;border-radius:10px;justify-self:end}
+.gameRankRow .rankNo{grid-area:rank;justify-self:end}
+.rankMetaPills{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:7px;direction:rtl}
+.rankMetaPills .metaPill{background:#fff;border:1px solid #dfe2e7;color:#4d5562;padding:6px 9px}
+.rankMetaPills .metaPill b{color:#2f3540;font-weight:800}
+.rankMetaPills .metaPill svg{width:15px;height:15px}
+
+.rankRow.profileRankRow{
+  display:grid!important;
+  grid-template-columns:82px 92px minmax(220px,300px) minmax(340px,1fr) 72px 48px!important;
+  grid-template-areas:"score edit title meta cover rank"!important;
+  direction:ltr!important;
+  gap:18px!important;
+  align-items:center!important;
+  min-height:110px!important;
+}
+.profileRankRow .rs{grid-area:score;justify-self:start}
+.profileRankRow .editBtn{grid-area:edit;justify-self:start}
+.profileRankRow .profileTitleBlock{grid-area:title;display:flex!important;align-items:center!important;justify-content:flex-start!important;height:100%!important}
+.profileRankRow .profileTitleBlock .rn{direction:ltr;text-align:left;font:800 .78rem Inter;display:flex!important;align-items:center!important;height:100%!important;justify-content:flex-start!important}
+.profileRankRow .profileMetaBlock{grid-area:meta;display:flex!important;align-items:center!important;justify-content:flex-end!important;height:100%!important}
+.profileRankRow .rankCover{grid-area:cover;width:58px;height:78px;object-fit:cover;border-radius:10px;justify-self:end}
+.profileRankRow .rankNo{grid-area:rank;justify-self:end}
+
+@media(max-width:1100px){
+  .rankRow.gameRankRow{grid-template-columns:72px minmax(170px,1fr) minmax(260px,1.2fr) 64px 42px!important}
+  .rankRow.profileRankRow{grid-template-columns:72px 82px minmax(170px,1fr) minmax(250px,1.2fr) 64px 42px!important}
+}
+@media(max-width:760px){
+  .rankRow.gameRankRow{grid-template-columns:64px 1fr 54px 38px!important;grid-template-areas:"score title cover rank" "meta meta meta meta"!important;row-gap:8px!important}
+  .gameRankRow .rankMetaBlock{grid-area:meta;justify-content:flex-start!important}
+  .rankMetaPills{justify-content:flex-start}
+  .rankRow.profileRankRow{grid-template-columns:64px 76px 1fr 54px 38px!important;grid-template-areas:"score edit title cover rank" "meta meta meta meta meta"!important;row-gap:8px!important}
+  .profileRankRow .profileMetaBlock{grid-area:meta;justify-content:flex-start!important}
+}
+
 </style>
 </head>
 <body>
@@ -656,6 +707,10 @@ function segBar(value){return `<div class="segbar" aria-label="${value.toFixed(1
 const icoPlatform='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="3"/><path d="M8 21h8M12 17v4"/></svg>';
 const icoTime='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const icoStatus='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const icoVotes='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+const icoYear='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';
+function rankMetaPills(x,a){return `<div class="rankMetaPills"><span class="metaPill">${icoPlatform}<b>${x.platforms.join('، ')}</b></span><span class="metaPill">${icoVotes}<b>${fmt(a.ratings)} رأی</b></span><span class="metaPill">${icoYear}<b>${x.year}</b></span></div>`}
+
 function voterMeta(r){return `<span class="metaPill">${icoPlatform}<b>${r.platforms.join('، ')}</b></span><span class="metaPill">${icoTime}<b>${r.hours} ساعت</b></span><span class="metaPill">${icoStatus}<b>${r.status}</b></span>`}
 let rankState={year:'all',platform:'all',sort:'score'};
 let userFilterState={year:'all',platform:'all',sort:'score'};
@@ -670,7 +725,7 @@ function wrapReview(open,close){let ta=document.getElementById('review');if(!ta)
 function applyReviewColor(color){wrapReview('[COLOR='+color+']','[/COLOR]')}
 function reviewKey(e){if(!(e.ctrlKey||e.metaKey))return;let k=e.key.toLowerCase();if(k==='b'){e.preventDefault();wrapReview('[B]','[/B]')}if(k==='i'){e.preventDefault();wrapReview('[I]','[/I]')}if(k==='u'){e.preventDefault();wrapReview('[U]','[/U]')}}
 function reviewToolbar(){return `<div class="reviewToolbar"><button type="button" title="Bold — Ctrl+B" onclick="wrapReview('[B]','[/B]')"><b>B</b></button><button type="button" title="Italic — Ctrl+I" onclick="wrapReview('[I]','[/I]')"><i>I</i></button><button type="button" title="Underline — Ctrl+U" onclick="wrapReview('[U]','[/U]')"><u>U</u></button><label class="colorTool" title="رنگ متن"><span>رنگ</span><input type="color" value="#2f6fff" onchange="applyReviewColor(this.value)"></label><select aria-label="ایموجی" onchange="if(this.value){insertReview(this.value);this.selectedIndex=0}"><option value="">😊 ایموجی</option><option>😀</option><option>😍</option><option>🔥</option><option>🎮</option><option>🏆</option><option>❤️</option><option>👍</option><option>👎</option><option>😮</option><option>😂</option><option>😢</option></select><select aria-label="کاراکتر ویژه" onchange="if(this.value){insertReview(this.value);this.selectedIndex=0}"><option value="">★ کاراکتر</option><option>★</option><option>☆</option><option>✓</option><option>✗</option><option>→</option><option>←</option><option>•</option><option>—</option><option>«</option><option>»</option><option>…</option></select></div>`}
-function rankingRow(x,i){let a=aggregate(x);return `<div class="rankRow gameRankRow" onclick="go('game:${x.id}')"><div class="rankNo">#${i+1}</div><img class="rankCover" src="${x.img}"><div class="rankTitleBlock"><div class="rn">${x.name}</div></div><div class="rankMetaBlock">${fmt(a.ratings)} رأی · ${x.platforms.join('، ')}</div><div class="rankYear">${x.year}</div><div class="rs">${a.score.toFixed(1)}</div></div>`}
+function rankingRow(x,i){let a=aggregate(x);return `<div class="rankRow gameRankRow" onclick="go('game:${x.id}')"><div class="rs">${a.score.toFixed(1)}</div><div class="rankTitleBlock"><div class="rn">${x.name}</div></div><div class="rankMetaBlock">${rankMetaPills(x,a)}</div><img class="rankCover" src="${x.img}"><div class="rankNo">#${i+1}</div></div>`}
 
 
 function setRankFilter(k,v){rankState[k]=v;render()}
@@ -693,7 +748,7 @@ async function sendToForum(){await navigator.clipboard.writeText(window.__bb||''
 function newRating(id){sessionStorage.removeItem('bc_edit_rating');go('rate:'+id)}
 function cancelRating(id){sessionStorage.removeItem('bc_edit_rating');go('game:'+id)}
 function editRating(rid){let r=saved().find(x=>x.id===rid);if(!r)return;sessionStorage.setItem('bc_edit_rating',rid);go('rate:'+r.gameId)}
-function profilePage(){let a=saved(),filtered=filterUserRows([...a]),name=localStorage.getItem(NAME)||'Guest',avg=a.length?a.reduce((s,r)=>s+r.overall,0)/a.length:0,totalHours=a.reduce((s,r)=>s+r.hours,0);return `<div class="topline"><div><h1>پروفایل ${name}</h1><p>پروفایل آزمایشی کاربر و تمام امتیازهای ثبت‌شده</p></div><button class="chip" onclick="openNameModal(true)">ویرایش نام نمایشی</button></div><div class="profileStats"><div class="info"><span>بازی‌های امتیاز داده‌شده</span><b>${fmt(a.length)}</b></div><div class="info"><span>میانگین امتیازهای من</span><b>${a.length?avg.toFixed(1):'—'}</b></div><div class="info"><span>مجموع زمان ثبت‌شده</span><b>${fmt(totalHours)} ساعت</b></div></div><section class="section"><div class="head"><div><h2>دنبال‌شده‌ها</h2><p>کاربرانی که نقدهایشان را دنبال می‌کنید</p></div></div><div class="followingChips">${followed().length?followed().map(n=>`<button onclick="go('user:${encodeURIComponent(n)}')">${n}</button>`).join(''):'<span>هنوز کسی را دنبال نکرده‌اید.</span>'}</div></section><section class="section"><div class="head"><div><h2>امتیازهای من</h2><p>فیلتر بر اساس سال، پلتفرم و امتیاز؛ ویرایش هر مورد از همین‌جا.</p></div></div>${a.length?userFilterMarkup(a):''}${filtered.length?`<div class="rankTable profileRatings">${filtered.map((r,i)=>{let x=g(r.gameId);return `<div class="rankRow profileRankRow"><div class="rankNo">#${i+1}</div><img class="rankCover" src="${x.img}"><div class="profileTitleBlock"><div class="rn" onclick="go('game:${x.id}')">${x.name}</div></div><div class="profileMetaBlock">${r.platforms.join('، ')} · ${r.hours} ساعت · ${r.status}</div><button class="editBtn" onclick="editRating('${r.id}')">ویرایش</button><div class="rs">${r.overall.toFixed(1)}</div></div>`}).join('')}</div>`:'<div class="saved show">موردی با این فیلترها پیدا نشد.</div>'}</section>`}
+function profilePage(){let a=saved(),filtered=filterUserRows([...a]),name=localStorage.getItem(NAME)||'Guest',avg=a.length?a.reduce((s,r)=>s+r.overall,0)/a.length:0,totalHours=a.reduce((s,r)=>s+r.hours,0);return `<div class="topline"><div><h1>پروفایل ${name}</h1><p>پروفایل آزمایشی کاربر و تمام امتیازهای ثبت‌شده</p></div><button class="chip" onclick="openNameModal(true)">ویرایش نام نمایشی</button></div><div class="profileStats"><div class="info"><span>بازی‌های امتیاز داده‌شده</span><b>${fmt(a.length)}</b></div><div class="info"><span>میانگین امتیازهای من</span><b>${a.length?avg.toFixed(1):'—'}</b></div><div class="info"><span>مجموع زمان ثبت‌شده</span><b>${fmt(totalHours)} ساعت</b></div></div><section class="section"><div class="head"><div><h2>دنبال‌شده‌ها</h2><p>کاربرانی که نقدهایشان را دنبال می‌کنید</p></div></div><div class="followingChips">${followed().length?followed().map(n=>`<button onclick="go('user:${encodeURIComponent(n)}')">${n}</button>`).join(''):'<span>هنوز کسی را دنبال نکرده‌اید.</span>'}</div></section><section class="section"><div class="head"><div><h2>امتیازهای من</h2><p>فیلتر بر اساس سال، پلتفرم و امتیاز؛ ویرایش هر مورد از همین‌جا.</p></div></div>${a.length?userFilterMarkup(a):''}${filtered.length?`<div class="rankTable profileRatings">${filtered.map((r,i)=>{let x=g(r.gameId);return `<div class="rankRow profileRankRow"><div class="rs">${r.overall.toFixed(1)}</div><button class="editBtn" onclick="editRating('${r.id}')">ویرایش</button><div class="profileTitleBlock"><div class="rn" onclick="go('game:${x.id}')">${x.name}</div></div><div class="profileMetaBlock"><div class="rankMetaPills">${voterMeta(r)}</div></div><img class="rankCover" src="${x.img}"><div class="rankNo">#${i+1}</div></div>`}).join('')}</div>`:'<div class="saved show">موردی با این فیلترها پیدا نشد.</div>'}</section>`}
 function publicUserPage(name){name=decodeURIComponent(name);let reviews=communityRatings.filter(r=>r.username===name),filtered=filterUserRows([...reviews]),score=reviews.length?reviews.reduce((s,r)=>s+r.overall,0)/reviews.length:0;return `<div class="publicProfile"><div class="profileHero"><div class="profileAvatar">${name.charAt(0).toUpperCase()}</div><div><h1>${name}</h1><p>${reviews.length} نقد و امتیاز نمونه · میانگین ${reviews.length?score.toFixed(1):'—'}</p></div><button class="followBtn ${isFollowing(name)?'on':''}" onclick="toggleFollow('${name}')">${isFollowing(name)?'دنبال می‌کنید':'دنبال کردن'}</button></div><section class="section"><div class="head"><div><h2>نقدها و امتیازها</h2><p>فیلتر بر اساس سال، پلتفرم و امتیاز</p></div></div>${reviews.length?userFilterMarkup(reviews):''}<div class="profileReviewList">${filtered.map(r=>{let x=g(r.gameId);return `<article class="profileReviewItem" onclick="go('game:${x.id}')"><img src="${x.img}"><div class="profileReviewBody"><div class="profileReviewTop"><div><div class="reviewGame">${x.name}</div><div class="reviewUser">${r.time||''}</div></div><div class="reviewScore">${r.overall.toFixed(1)}</div></div><div class="voterMetaChips">${voterMeta(r)}</div><p class="reviewRendered">${renderReview(r.review||'بدون متن نقد')}</p></div></article>`}).join('')||'<div class="saved show">موردی با این فیلترها پیدا نشد.</div>'}</div></section></div>`}
 function notificationsPage(){let names=followed(),items=communityRatings.filter(r=>names.includes(r.username));return `<div class="topline"><div><h1>اعلان‌ها</h1><p>وقتی کاربری که دنبال می‌کنید نقد یا امتیاز تازه ثبت کند، اینجا نمایش داده می‌شود.</p></div></div>${names.length?`<div class="notificationList">${items.map(r=>{let x=g(r.gameId);return `<div class="notificationItem" onclick="go('game:${x.id}')"><div class="feedAvatar">${r.username[0]}</div><div><b>${r.username}</b> برای <span class="en">${x.name}</span> نقد/امتیاز ثبت کرده است.<small>${r.time}</small></div><strong>${r.overall.toFixed(1)}</strong></div>`}).join('')||'<div class="saved show">فعلاً فعالیت تازه‌ای از کاربران دنبال‌شده وجود ندارد.</div>'}</div>`:'<div class="saved show">هنوز کسی را دنبال نکرده‌اید. از صفحه بازی روی نام کاربر بروید و «دنبال کردن» را بزنید.</div>'}`}
 function suggest(v){let b=document.getElementById('suggest'),q=v.trim().toLowerCase();if(!q){b.classList.remove('show');return}let a=games.filter(x=>x.name.toLowerCase().includes(q)).slice(0,8);b.innerHTML=a.map(x=>`<div class="srow" onclick="selectGame('${x.id}')"><img src="${x.img}"><div class="sname">${x.name}</div><div class="sscore">${aggregate(x).score.toFixed(1)}</div></div>`).join('')||'<div style="padding:14px;font-size:.72rem">نتیجه‌ای پیدا نشد</div>';b.classList.add('show')}
